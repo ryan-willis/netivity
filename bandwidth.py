@@ -1,5 +1,4 @@
 from ctypes import CDLL, POINTER, Structure, c_uint64, c_char, byref
-from time import sleep
 
 
 class Params(Structure):
@@ -21,24 +20,18 @@ def human_rate(bytes):
     return "%d%s" % (bytes, suffixes[i])
 
 
-ptr = [""]
-
-
-def print_human(p: Params):
-    iface = params.ifa_name.decode()
+def format_human(p: Params):
+    iface = p.ifa_name.decode()
     net_in = human_rate(p.net_in)
     net_out = human_rate(p.net_out)
-    ptr[0] = f"{iface}⬇{net_in}⬆{net_out}"
+    return f"{iface}⬇{net_in}⬆{net_out}"
 
 
 get_bandwidth = CDLL("bandwidth.dylib").get_bandwidth
 get_bandwidth.argtypes = [POINTER(Params)]
 
-params = Params(0, 0, 0, 0, b"en0")
 
-
-def loop():
-    while True:
-        get_bandwidth(byref(params))
-        print_human(params)
-        sleep(1)
+def retrieve(p: Params):
+    get_bandwidth(byref(p))
+    print(p.last_in, p.last_out, p.net_in, p.net_out, p.ifa_name)
+    return format_human(p)
