@@ -11,6 +11,10 @@ class Params(Structure):
     ]
 
 
+get_bandwidth = CDLL("bandwidth.dylib").get_bandwidth
+get_bandwidth.argtypes = [POINTER(Params)]
+
+
 def human_rate(bytes):
     i = 0
     suffixes = ["B", "K", "M"]
@@ -27,11 +31,6 @@ def format_human(p: Params):
     return f"{iface}⬇{net_in}⬆{net_out}"
 
 
-get_bandwidth = CDLL("bandwidth.dylib").get_bandwidth
-get_bandwidth.argtypes = [POINTER(Params)]
-
-
 def retrieve(p: Params):
     get_bandwidth(byref(p))
-    print(p.last_in, p.last_out, p.net_in, p.net_out, p.ifa_name)
     return format_human(p)

@@ -50,5 +50,9 @@ class Netivity:
         self.app.title = bandwidth.retrieve(self.params)
 
 
-if __name__ == "__main__":
+def main():
     Netivity()
+
+
+if __name__ == "__main__":
+    main()
