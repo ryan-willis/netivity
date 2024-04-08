@@ -11,7 +11,8 @@ class Params(Structure):
     ]
 
 
-get_bandwidth = CDLL("bandwidth.dylib").get_bandwidth
+dylib = CDLL("bandwidth.dylib")
+get_bandwidth = dylib.get_bandwidth
 get_bandwidth.argtypes = [POINTER(Params)]
 
 

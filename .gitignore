@@ -154,3 +154,6 @@ dmypy.json
 cython_debug/
 
 .vscode/
+*.dSYM
+test
+test.c
