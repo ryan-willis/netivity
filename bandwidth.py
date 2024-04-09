@@ -29,7 +29,7 @@ def format_human(p: Params):
     iface = p.ifa_name.decode()
     net_in = human_rate(p.net_in)
     net_out = human_rate(p.net_out)
-    return f"{iface}⬇{net_in}⬆{net_out}"
+    return f"{iface}⬆{net_out}⬇{net_in}"
 
 
 def retrieve(p: Params):

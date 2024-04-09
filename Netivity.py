@@ -4,8 +4,6 @@ import subprocess
 import re
 import prefs
 
-# import socket
-
 
 class Netivity(prefs.Prefs):
     def __init__(self):
@@ -24,20 +22,17 @@ class Netivity(prefs.Prefs):
         self.app.run()
 
     def init_interfaces(self):
+        """Initializes the interface list."""
         self.interface = None
         self.load_interfaces()
 
     def init_menu(self):
-        items = ["Paused while open", None]
+        """Constructs and sets the initial menu for the app."""
+        items = ["Paused while open", rumps.separator]
         items.append(
             (
                 "Interfaces",
-                [
-                    rumps.MenuItem(
-                        title=interface,
-                    )
-                    for interface in self.interfaces
-                ],
+                [rumps.separator],  # placehold with a separator
             )
         )
         items.append(
@@ -53,12 +48,14 @@ class Netivity(prefs.Prefs):
                         callback=self.shorten_en,
                     ),
                 ],
-            )
+            ),
         )
+        items.append(rumps.separator)
         self.app.menu = items
         self.set_interface_menu_items()
 
     def set_interface_menu_items(self):
+        """Rebuilds the items in the Interfaces menu."""
         interfaces_menu = self.app.menu["Interfaces"]
         interfaces_menu.clear()
         for interface in self.interfaces:
@@ -73,6 +70,7 @@ class Netivity(prefs.Prefs):
                 interfaces_menu[item].state = True
 
     def load_interfaces(self):
+        """Loads all interfaces with active routes and ensures an active interface is selected."""
         # interfaces = sorted([name for _, name in socket.if_nameindex()])
         self.active_interfaces = dict()
 
@@ -95,14 +93,17 @@ class Netivity(prefs.Prefs):
             self.set_interface(self.interfaces[0])
 
     def shorten_utun(self, sender):
+        """Click handler for the shorten utun menu item."""
         sender.state = not sender.state
         self.write_pref("shorten_utun", sender.state)
 
     def shorten_en(self, sender):
+        """Click handler for the shorten en menu item."""
         sender.state = not sender.state
         self.write_pref("shorten_en", sender.state)
 
     def switch_interface(self, sender):
+        """Click handler for the interface menu items."""
         sender.state = True
         interfaces_menu = self.app.menu["Interfaces"]
         for item in interfaces_menu:
@@ -112,6 +113,7 @@ class Netivity(prefs.Prefs):
         self.set_interface(sender.title)
 
     def set_interface(self, interface):
+        """Sets the current interface and updates the Params struct."""
         self.interface = interface
         self.params.last_out = 0
         self.params.last_in = 0
@@ -120,6 +122,7 @@ class Netivity(prefs.Prefs):
         self.params.ifa_name = self.interface.encode()
 
     def tick(self, *_):
+        """Updates the title of the app with the current traffic."""
         self.load_interfaces()
         self.set_interface_menu_items()
         title = bandwidth.retrieve(self.params)
@@ -130,9 +133,5 @@ class Netivity(prefs.Prefs):
         self.app.title = title
 
 
-def main():
-    Netivity()
-
-
 if __name__ == "__main__":
-    main()
+    Netivity()
