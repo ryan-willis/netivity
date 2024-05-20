@@ -157,3 +157,4 @@ cython_debug/
 *.dSYM
 test
 test.c
+.DS_*
